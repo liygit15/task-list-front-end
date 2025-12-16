@@ -20,6 +20,16 @@ const TASKS = [
   },
 ];
 
+const countCompletedTasks = taskData => {
+  let countCT = 0;
+  for (const task of taskData){
+    if (task.isComplete) {
+      countCT += 1;
+    }
+  };
+  return countCT;
+};
+
 const App = () => {
   const [taskData, setTaskData] = useState(TASKS);
 
@@ -42,14 +52,18 @@ const App = () => {
     });
   };
 
+  const completedTasks = countCompletedTasks(taskData);
+  const totalTasks = (taskData).length;
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList 
-          tasks={taskData} 
+        <p>{completedTasks}/{totalTasks} tasks completed</p>
+        <div>{<TaskList
+          tasks={taskData}
           handleToggleComplete={handleToggleComplete}
           handleDeleteTask={handleDeleteTask}/>}</div>
       </main>
