@@ -48,8 +48,8 @@ const App = () => {
         <h1>Ada&apos;s Task List</h1>
       </header>
       <main>
-        <div>{<TaskList 
-          tasks={taskData} 
+        <div>{<TaskList
+          tasks={taskData}
           handleToggleComplete={handleToggleComplete}
           handleDeleteTask={handleDeleteTask}/>}</div>
       </main>
