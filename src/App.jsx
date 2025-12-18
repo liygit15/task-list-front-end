@@ -1,24 +1,25 @@
 import TaskList from './components/TaskList.jsx';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const TASKS = [
-  {
-    id: 1,
-    title: 'Mow the lawn',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Cook Pasta',
-    isComplete: true,
-  },
-  {
-    id: 3,
-    title: 'learn java',
-    isComplete: false,
-  },
-];
+// const TASKS = [
+//   {
+//     id: 1,
+//     title: 'Mow the lawn',
+//     isComplete: false,
+//   },
+//   {
+//     id: 2,
+//     title: 'Cook Pasta',
+//     isComplete: true,
+//   },
+//   {
+//     id: 3,
+//     title: 'learn java',
+//     isComplete: false,
+//   },
+// ];
 
 const countCompletedTasks = taskData => {
   let countCT = 0;
@@ -30,27 +31,83 @@ const countCompletedTasks = taskData => {
   return countCT;
 };
 
+const kbaseURL = 'http://localhost:5000';
+
+const getAllTasksAPI = () => {
+  return axios.get(`${kbaseURL}/tasks`)
+    .then(response => response.data)
+    .catch(error => console.log(error));
+};
+
+const convertFromAPI = (apiTask) => {
+  const newTask = {
+    ...apiTask,
+    isComplete: apiTask.is_complete ? apiTask.is_complete : false,
+    goalId: apiTask.goal_id ? apiTask.goal_id : null,
+  };
+
+  delete newTask.is_complete;
+  delete newTask.goalId;
+
+  return newTask;
+};
+
+const toggleCompleTaskAPI = id => {
+  return axios.patch(`${kbaseURL}/tasks/${id}/mark_complete`)
+    .catch(error => console.log(error));
+};
+
+const toggleInCompleTaskAPI = id => {
+  return axios.patch(`${kbaseURL}/tasks/${id}/mark_incomplete`)
+    .catch(error => console.log(error));
+};
+
+const deleteTaskAPI = id => {
+  return axios.delete(`${kbaseURL}/tasks/${id}`)
+    .catch(error => console.log(error));
+};
+
 const App = () => {
-  const [taskData, setTaskData] = useState(TASKS);
+  const [taskData, setTaskData] = useState([]);
 
   const handleToggleComplete = id => {
-    setTaskData(taskData => {
-      return taskData.map(task => {
-        if (task.id === id) {
-          return {...task, isComplete: !task.isComplete};
-        } else {
-          return task;
-        }
+    return toggleCompleTaskAPI(id)
+      .then(() => {
+        return setTaskData(taskData =>{
+          return taskData.map(task => task.id === id ? {...task, isComplete: !task.isComplete} : task);
+        });
       });
-    });
+  }
+
+  const handleToggleInComplete = id => {
+    return toggleInCompleTaskAPI(id)
+      .then(() => {
+        return setTaskData(taskData =>{
+          return taskData.map(task => task.id === id ? {...task, isComplete: !task.isComplete} : task);
+        });
+      });
   };
 
   const handleDeleteTask = id => {
-    // console.log(id);
-    setTaskData(taskData => {
-      return taskData.filter(task => task.id !== id);
-    });
+    return deleteTaskAPI(id)
+      .then(() => {
+        return setTaskData(taskData => {
+          return taskData.filter(task => task.id !== id);
+        });
+      });
   };
+
+  const getAllTasks = () => {
+    return getAllTasksAPI()
+      .then(tasks => {
+        const newTasks = tasks.map(convertFromAPI);
+        setTaskData(newTasks);
+      });
+  };
+
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
   const completedTasks = countCompletedTasks(taskData);
   const totalTasks = (taskData).length;
@@ -65,6 +122,7 @@ const App = () => {
         <div>{<TaskList
           tasks={taskData}
           handleToggleComplete={handleToggleComplete}
+          handleToggleInComplete={handleToggleInComplete}
           handleDeleteTask={handleDeleteTask}/>}</div>
       </main>
     </div>
