@@ -31,7 +31,7 @@ TaskList.propTypes = {
   ).isRequired,
   handleToggleComplete: PropTypes.func,
   handleToggleInComplete: PropTypes.func,
-  handleDeleteTask: PropTypes.func
+  handleDeleteTask: PropTypes.func,
 };
 
 export default TaskList;

@@ -2,6 +2,7 @@ import TaskList from './components/TaskList.jsx';
 import './App.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import NewTaskForm from './components/NewTaskForm.jsx';
 
 // const TASKS = [
 //   {
@@ -67,6 +68,11 @@ const deleteTaskAPI = id => {
     .catch(error => console.log(error));
 };
 
+const addTaskAPI = (newTask) => {
+  return axios.post(`${kbaseURL}/tasks`, newTask)
+    .catch(error => console.log(error));
+};
+
 const App = () => {
   const [taskData, setTaskData] = useState([]);
 
@@ -77,7 +83,7 @@ const App = () => {
           return taskData.map(task => task.id === id ? {...task, isComplete: !task.isComplete} : task);
         });
       });
-  }
+  };
 
   const handleToggleInComplete = id => {
     return toggleInCompleTaskAPI(id)
@@ -109,6 +115,22 @@ const App = () => {
     getAllTasks();
   }, []);
 
+  const onHandleSubmit = (data) =>{
+    return addTaskAPI(data)
+      .then((result) => {
+        return setTaskData((prevTasks) => [convertFromAPI(result.data), ...prevTasks]);
+      });
+  };
+
+  // const testTask = {
+  //   'description': 'Notice something new every day',
+  //   'is_complete': false,
+  //   'title': 'Go on my daily walk'
+  // }
+  // onHandleSubmit(testTask)
+  //   .then((result) => console.log(result));
+
+
   const completedTasks = countCompletedTasks(taskData);
   const totalTasks = (taskData).length;
 
@@ -124,6 +146,7 @@ const App = () => {
           handleToggleComplete={handleToggleComplete}
           handleToggleInComplete={handleToggleInComplete}
           handleDeleteTask={handleDeleteTask}/>}</div>
+        <NewTaskForm onHandleSubmit={onHandleSubmit}></NewTaskForm>
       </main>
     </div>
   );
