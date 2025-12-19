@@ -4,24 +4,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import NewTaskForm from './components/NewTaskForm.jsx';
 
-// const TASKS = [
-//   {
-//     id: 1,
-//     title: 'Mow the lawn',
-//     isComplete: false,
-//   },
-//   {
-//     id: 2,
-//     title: 'Cook Pasta',
-//     isComplete: true,
-//   },
-//   {
-//     id: 3,
-//     title: 'learn java',
-//     isComplete: false,
-//   },
-// ];
-
 const countCompletedTasks = taskData => {
   let countCT = 0;
   for (const task of taskData){
@@ -44,7 +26,7 @@ const convertFromAPI = (apiTask) => {
   const newTask = {
     ...apiTask,
     isComplete: apiTask.is_complete ? apiTask.is_complete : false,
-    goalId: apiTask.goal_id ? apiTask.goal_id : null,
+    goalId: apiTask.goal_id,
   };
 
   delete newTask.is_complete;
@@ -122,15 +104,15 @@ const App = () => {
       });
   };
 
-  // const testTask = {
-  //   'description': 'Notice something new every day',
-  //   'is_complete': false,
-  //   'title': 'Go on my daily walk'
-  // }
-  // onHandleSubmit(testTask)
-  //   .then((result) => console.log(result));
-
-
+//   const onHandleSubmit = (data) => {
+//   return addTaskAPI(data)
+//     .then((result) => {
+//       // 使用前端传入的 isComplete 而不是依赖 API
+//       const newTask = convertFromAPI(result.data);
+//       newTask.isComplete = data.is_complete; // 这里覆盖
+//       setTaskData((prevTasks) => [newTask, ...prevTasks]);
+//     });
+// };
   const completedTasks = countCompletedTasks(taskData);
   const totalTasks = (taskData).length;
 
@@ -146,7 +128,9 @@ const App = () => {
           handleToggleComplete={handleToggleComplete}
           handleToggleInComplete={handleToggleInComplete}
           handleDeleteTask={handleDeleteTask}/>}</div>
-        <NewTaskForm onHandleSubmit={onHandleSubmit}></NewTaskForm>
+        <NewTaskForm
+          onHandleSubmit={onHandleSubmit}
+        ></NewTaskForm>
       </main>
     </div>
   );
