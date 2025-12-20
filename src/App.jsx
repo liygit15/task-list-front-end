@@ -104,15 +104,6 @@ const App = () => {
       });
   };
 
-//   const onHandleSubmit = (data) => {
-//   return addTaskAPI(data)
-//     .then((result) => {
-//       // 使用前端传入的 isComplete 而不是依赖 API
-//       const newTask = convertFromAPI(result.data);
-//       newTask.isComplete = data.is_complete; // 这里覆盖
-//       setTaskData((prevTasks) => [newTask, ...prevTasks]);
-//     });
-// };
   const completedTasks = countCompletedTasks(taskData);
   const totalTasks = (taskData).length;
 
