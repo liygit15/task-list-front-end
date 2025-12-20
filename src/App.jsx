@@ -64,32 +64,14 @@ const toggleTaskAPI = async (id, complete = true) => {
   }
 };
 
-// const deleteTaskAPI = id => {
-//   return axios.delete(`${kbaseURL}/tasks/${id}`)
-//     .catch(error => console.log(error));
-// };
-
-const deleteTaskAPI = async (id) => {
-  try {
-    await axios.delete(`${kbaseURL}/tasks/${id}`);
-  } catch (error) {
-    console.log(error);
-  }
+const deleteTaskAPI = id => {
+  return axios.delete(`${kbaseURL}/tasks/${id}`)
+    .catch(error => console.log(error));
 };
 
-// const addTaskAPI = (newTask) => {
-//   return axios.post(`${kbaseURL}/tasks`, newTask)
-//     .catch(error => console.log(error));
-// };
-
-const addTaskAPI = async (newTask) => {
-  try {
-    const response = await axios.post(`${kbaseURL}/tasks`, newTask);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+const addTaskAPI = (newTask) => {
+  return axios.post(`${kbaseURL}/tasks`, newTask)
+    .catch(error => console.log(error));
 };
 
 const App = () => {
@@ -132,50 +114,32 @@ const handleToggleComplete = async (id) => {
   };
 
 
-  // const handleDeleteTask = id => {
-  //   return deleteTaskAPI(id)
-  //     .then(() => {
-  //       return setTaskData(taskData => {
-  //         return taskData.filter(task => task.id !== id);
-  //       });
-  //     });
-  // };
-
-  const handleDeleteTask = async (id) => {
-    await deleteTaskAPI(id);
-    setTaskData((prev) => prev.filter((task) => task.id !== id));
+  const handleDeleteTask = id => {
+    return deleteTaskAPI(id)
+      .then(() => {
+        return setTaskData(taskData => {
+          return taskData.filter(task => task.id !== id);
+        });
+      });
   };
 
-  // const getAllTasks = () => {
-  //   return getAllTasksAPI()
-  //     .then(tasks => {
-  //       const newTasks = tasks.map(convertFromAPI);
-  //       setTaskData(newTasks);
-  //     });
-  // };
-
-  const getAllTasks = async () => {
-    const tasks = await getAllTasksAPI();
-    const newTasks = tasks.map(convertFromAPI);
-    setTaskData(newTasks);
+  const getAllTasks = () => {
+    return getAllTasksAPI()
+      .then(tasks => {
+        const newTasks = tasks.map(convertFromAPI);
+        setTaskData(newTasks);
+      });
   };
 
   useEffect(() => {
     getAllTasks();
   }, []);
 
-  // const onHandleSubmit = (data) =>{
-  //   return addTaskAPI(data)
-  //     .then((result) => {
-  //       return setTaskData((prevTasks) => [convertFromAPI(result.data), ...prevTasks]);
-  //     });
-  // };
-
-  const onHandleSubmit = async (data) => {
-    const result = await addTaskAPI(data);
-    if (result) {
-      setTaskData((prev) => [convertFromAPI(result), ...prev]);
-    }
+  const onHandleSubmit = (data) =>{
+    return addTaskAPI(data)
+      .then((result) => {
+        return setTaskData((prevTasks) => [convertFromAPI(result.data), ...prevTasks]);
+      });
   };
 
   const completedTasks = countCompletedTasks(taskData);
