@@ -20,7 +20,7 @@ const NewTaskForm = ({onHandleSubmit}) => {
         [inputName]: inputValue
       };
     });
-    // console.log(formData);
+    console.log(formData);
   };
 
   const handleSubmit = (event) => {
@@ -38,9 +38,9 @@ const NewTaskForm = ({onHandleSubmit}) => {
   const makeControlledInput = (inputName) => {
     return (
       <div>
-        <lable htmlFor={inputName}>
+        <label htmlFor={inputName}>
           {inputName}
-        </lable>
+        </label>
         <input
           type='text'
           name={inputName}
@@ -63,7 +63,7 @@ const NewTaskForm = ({onHandleSubmit}) => {
         <select
           id="isComplete"
           name="isComplete"
-          value={formData.isComplete ? 'yes' : 'no'}
+          value={formData.isComplete === 'yes' ? 'yes' : 'no'}
           onChange={handleChange}
         >
           <option value='yes'>Yes</option>
